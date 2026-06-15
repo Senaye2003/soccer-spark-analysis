@@ -27,13 +27,25 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 17)   # add to ~/.zshrc to persist
 pip3 install -r requirements.txt
 ```
 
-Run the ingestion pipeline and tests:
+## Usage
 
 ```bash
-python3 src/ingestion.py --output-path ./output/events   # full run, writes Parquet
-python3 src/ingestion.py --skip-eda                       # quick smoke test
-python3 -m pytest tests/                                  # unit tests
+# 1. Ingest events + match dimension to ./output (Parquet)
+python3 src/ingestion.py --output-path ./output/events
+
+# 2. Run the analytical queries over the ingested data
+python3 src/transformations.py --events-path ./output/events --matches-path ./output/matches
+
+# Or run the whole pipeline
+bash run.sh
+
+# Run the tests
+python3 -m pytest tests/
 ```
+
+`src/transformations.py` provides shot efficiency vs xG (by player and team),
+team comparisons, passing completion and length, event trends across the match,
+and a join of goal events with match metadata.
 
 ## Planned Components
 
